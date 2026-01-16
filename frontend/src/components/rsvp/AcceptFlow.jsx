@@ -32,7 +32,7 @@ const AcceptFlow = ({ token }) => {
             
             <p className="text-luxury-champagne font-serif text-lg leading-relaxed">
               Your Legacy Pass has been generated and is ready for you. 
-              Complete your $1,000 investment to unlock full access and receive 
+              Complete your $1,000 donation to unlock full access and receive 
               your exclusive gifts.
             </p>
             
@@ -71,7 +71,7 @@ const AcceptFlow = ({ token }) => {
                 </div>
                 <div>
                   <p className="text-luxury-off-white font-serif">
-                    Complete your $1,000 investment
+                    Complete your $1,000 donation
                   </p>
                 </div>
               </div>

@@ -105,7 +105,7 @@ const PaymentPage = () => {
           <AnimatedEntrance animation="slideUp" duration={0.8}>
             <div className="text-center mb-12">
               <h1 className="heading-luxury text-5xl mb-4">
-                Complete Your Investment
+                Complete Your Donation
               </h1>
               <p className="subheading-luxury text-2xl mb-6">
                 {formatCurrency(PAYMENT_AMOUNT)}
