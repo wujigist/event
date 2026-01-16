@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Button from '../common/Button';
-import { FiMenu, FiX, FiHome, FiCalendar, FiCreditCard } from 'react-icons/fi';
+import { FiMenu, FiX, FiHome, FiCalendar, FiCreditCard, FiUsers, FiCheckSquare, FiDollarSign } from 'react-icons/fi';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -10,11 +10,26 @@ const Header = () => {
   const { isAuthenticated, member, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navItems = [
+  // Check if user is admin
+  const isAdmin = member?.membership_tier === 'admin' || 
+                  member?.email?.endsWith('@paigeinnercircle.com');
+
+  // Member navigation
+  const memberNavItems = [
     { path: '/dashboard', label: 'Dashboard', icon: FiHome },
     { path: '/event', label: 'Event Details', icon: FiCalendar },
     { path: '/legacy-pass', label: 'Legacy Pass', icon: FiCreditCard },
   ];
+
+  // Admin navigation
+  const adminNavItems = [
+    { path: '/admin', label: 'Admin Dashboard', icon: FiHome },
+    { path: '/admin/members', label: 'Members', icon: FiUsers },
+    { path: '/admin/rsvps', label: 'RSVPs', icon: FiCheckSquare },
+    { path: '/admin/payments', label: 'Payments', icon: FiDollarSign },
+  ];
+
+  const navItems = isAdmin ? adminNavItems : memberNavItems;
 
   const isActive = (path) => location.pathname === path;
 
@@ -29,7 +44,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
           <button
-            onClick={() => navigate(isAuthenticated ? '/dashboard' : '/')}
+            onClick={() => navigate(isAuthenticated ? (isAdmin ? '/admin' : '/dashboard') : '/')}
             className="font-elegant text-luxury-gold text-2xl md:text-3xl tracking-wide hover:text-luxury-dark-gold transition-colors"
           >
             Paige's Inner Circle
@@ -64,10 +79,10 @@ const Header = () => {
               {/* Divider */}
               <div className="h-10 w-px bg-luxury-gold/30" />
 
-              {/* Member Name */}
+              {/* Member Name & Role */}
               <div className="text-right">
                 <p className="text-luxury-champagne font-serif text-sm">
-                  Welcome back,
+                  {isAdmin ? 'Administrator' : 'Welcome back,'}
                 </p>
                 <p className="text-luxury-gold font-sans font-bold">
                   {member.full_name}
@@ -103,7 +118,7 @@ const Header = () => {
             {/* Member Info */}
             <div className="mb-6 pb-6 border-b border-luxury-gold/20">
               <p className="text-luxury-champagne font-serif text-sm mb-1">
-                Welcome back,
+                {isAdmin ? 'Administrator' : 'Welcome back,'}
               </p>
               <p className="text-luxury-gold font-sans font-bold text-lg">
                 {member.full_name}

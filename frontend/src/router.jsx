@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import PrivateRoute from './components/auth/PrivateRoute';
+import AdminRoute from './components/auth/AdminRoute';
 
 // =====================
 // Public Pages
@@ -17,6 +18,14 @@ import RSVPPage from './pages/member/RSVPPage';
 import LegacyPassPage from './pages/member/LegacyPassPage';
 import PassAccessPage from './pages/member/PassAccessPage';
 import PaymentPage from './pages/member/PaymentPage';
+
+// =====================
+// Admin Pages
+// =====================
+import AdminDashboard from './pages/admin/AdminDashboard';
+import MembersList from './pages/admin/MembersList';
+import RSVPManagement from './pages/admin/RSVPManagement';
+import PaymentVerification from './pages/admin/PaymentVerification';
 
 // =====================
 // Router Configuration
@@ -79,6 +88,40 @@ const router = createBrowserRouter([
       <PrivateRoute>
         <PaymentPage />
       </PrivateRoute>
+    ),
+  },
+
+  // ---------- Protected Admin Routes ----------
+  {
+    path: '/admin',
+    element: (
+      <AdminRoute>
+        <AdminDashboard />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/members',
+    element: (
+      <AdminRoute>
+        <MembersList />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/rsvps',
+    element: (
+      <AdminRoute>
+        <RSVPManagement />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: '/admin/payments',
+    element: (
+      <AdminRoute>
+        <PaymentVerification />
+      </AdminRoute>
     ),
   },
 
