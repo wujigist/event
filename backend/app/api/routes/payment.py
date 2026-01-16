@@ -22,12 +22,7 @@ from ...schemas.payment import (
     PaymentVerifiedResponse
 )
 from ...api.dependencies import get_current_member, require_admin
-from ...services import (
-    validate_legacy_token,
-    send_payment_instructions,
-    send_payment_verified,
-    notify_admin_payment_request
-)
+from ...services import validate_legacy_token
 
 
 router = APIRouter(prefix="/payment", tags=["Payment"])
@@ -103,13 +98,12 @@ async def submit_payment_contact(
     Member provides email and selected payment method
     
     **No Authentication Required** - Uses legacy pass token only
+    **Email notifications disabled** - Manual follow-up required
     
     Process:
     1. Validates legacy pass token
     2. Updates payment record with contact info
-    3. Sends confirmation email to member
-    4. Notifies admin of payment request
-    5. Admin will contact member within 24 hours
+    3. Returns confirmation (NO emails sent)
     
     Args:
         payment_data: Payment contact submission
@@ -152,34 +146,11 @@ async def submit_payment_contact(
     db.commit()
     db.refresh(payment)
     
-    # Get member info
-    member = db.query(Member).filter(Member.id == legacy_pass.member_id).first()
-    
-    # Send confirmation email to member
-    try:
-        await send_payment_instructions(
-            to_email=payment_data.contact_email,
-            member_name=member.full_name,
-            payment_method=payment_data.payment_method,
-            contact_email=payment_data.contact_email
-        )
-    except Exception as e:
-        print(f"Warning: Email to member failed: {e}")
-    
-    # Notify admin
-    try:
-        # In production, you'd have an admin email in settings
-        admin_email = "admin@paigeinnercircle.com"
-        await notify_admin_payment_request(
-            admin_email=admin_email,
-            member_name=member.full_name,
-            member_email=member.email,
-            payment_method=payment_data.payment_method,
-            contact_email=payment_data.contact_email,
-            pass_number=legacy_pass.pass_number
-        )
-    except Exception as e:
-        print(f"Warning: Admin notification failed: {e}")
+    # EMAIL DISABLED - Manual follow-up required
+    print(f"Payment contact submitted - Manual follow-up needed:")
+    print(f"  Member: {legacy_pass.member_id}")
+    print(f"  Contact: {payment_data.contact_email}")
+    print(f"  Method: {payment_data.payment_method}")
     
     return PaymentContactResponse(
         message="Thank you! Your payment request has been received.",
@@ -255,12 +226,13 @@ async def verify_payment(
     Verify a payment (Admin Only)
     
     **Protected Route** - Requires admin authentication
+    **Email notifications disabled** - Manual notification required
     
     Process:
     1. Marks payment as verified
     2. Records admin who verified
-    3. Sends confirmation email to member
-    4. Member gains full access to Legacy Pass
+    3. Member gains full access to Legacy Pass
+    4. NO email sent - handle manually
     
     Args:
         verification: Payment verification data
@@ -311,15 +283,11 @@ async def verify_payment(
         Member.id == payment.member_id
     ).first()
     
-    # Send confirmation email to member
-    try:
-        await send_payment_verified(
-            to_email=member.email,
-            member_name=member.full_name,
-            pass_token=str(legacy_pass.unique_token)
-        )
-    except Exception as e:
-        print(f"Warning: Verification email failed: {e}")
+    # EMAIL DISABLED - Manual notification required
+    print(f"Payment verified - Manual notification needed:")
+    print(f"  Member: {member.full_name} ({member.email})")
+    print(f"  Token: {legacy_pass.unique_token}")
+    print(f"  Verified by: {verification.verified_by}")
     
     return PaymentVerifiedResponse(
         message=f"Payment verified successfully. {member.full_name} now has full access.",

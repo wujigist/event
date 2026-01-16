@@ -18,8 +18,6 @@ from ...models.payment import Payment
 from ...schemas.rsvp import (
     RSVPCreate,
     RSVPResponse,
-    RSVPAcceptedResponse,
-    RSVPDeclinedResponse,
     RSVPStatusResponse
 )
 from ...api.dependencies import get_current_member
@@ -27,9 +25,7 @@ from ...services import (
     generate_unique_token,
     save_qr_code_image,
     save_pass_assets,
-    assign_gift_tier,
-    send_rsvp_confirmation,
-    send_decline_thank_you
+    assign_gift_tier
 )
 
 
@@ -46,6 +42,7 @@ async def submit_rsvp(
     Submit RSVP for an event (Accept or Decline)
     
     **Protected Route** - Requires authentication
+    **Email notifications disabled** - Manual follow-up required
     
     **On Accept:**
     - Creates RSVP record
@@ -54,13 +51,11 @@ async def submit_rsvp(
     - Generates QR code
     - Creates blurred pass preview
     - Creates Payment record (pending)
-    - Sends confirmation email
-    - Returns token and next steps
+    - Returns token and next steps (NO email sent)
     
     **On Decline:**
     - Creates RSVP record
-    - Sends thank you email
-    - Returns graceful message
+    - Returns graceful message (NO email sent)
     
     Args:
         rsvp_data: RSVP submission with event_id and status
@@ -212,16 +207,11 @@ async def submit_rsvp(
         db.add(payment)
         db.commit()
         
-        # Send confirmation email
-        try:
-            await send_rsvp_confirmation(
-                to_email=current_member.email,
-                member_name=current_member.full_name,
-                token=str(unique_token)
-            )
-        except Exception as e:
-            print(f"Warning: Email sending failed: {e}")
-            # Continue anyway - email is not critical
+        # EMAIL DISABLED - Manual follow-up required
+        print(f"RSVP Accepted - Manual notification needed:")
+        print(f"  Member: {current_member.full_name} ({current_member.email})")
+        print(f"  Token: {unique_token}")
+        print(f"  Pass: {pass_number}")
         
         # Return acceptance response
         return {
@@ -240,14 +230,9 @@ async def submit_rsvp(
     
     # Handle DECLINED response
     else:
-        # Send thank you email
-        try:
-            await send_decline_thank_you(
-                to_email=current_member.email,
-                member_name=current_member.full_name
-            )
-        except Exception as e:
-            print(f"Warning: Email sending failed: {e}")
+        # EMAIL DISABLED - Manual follow-up required
+        print(f"RSVP Declined - Manual notification needed:")
+        print(f"  Member: {current_member.full_name} ({current_member.email})")
         
         # Return decline response
         return {
