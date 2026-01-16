@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import AnimatedEntrance from '../components/common/AnimatedEntrance';
+import AnimatedEntrance from '../../components/common/AnimatedEntrance';
 import Button from '../components/common/Button';
 import Footer from '../components/layout/Footer';
 import { FiHome, FiMail } from 'react-icons/fi';
