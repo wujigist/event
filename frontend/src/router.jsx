@@ -8,6 +8,7 @@ import AdminRoute from './components/auth/AdminRoute';
 // =====================
 import LandingPage from './pages/public/LandingPage';
 import AccessPage from './pages/public/AccessPage';
+import NotFoundPage from './pages/public/NotFoundPage';
 
 // =====================
 // Member Pages
@@ -128,22 +129,7 @@ const router = createBrowserRouter([
   // ---------- Catch-all (404) ----------
   {
     path: '*',
-    element: (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="heading-luxury text-4xl mb-4">Page Not Found</h1>
-          <p className="text-luxury-champagne font-serif">
-            This page does not exist.
-          </p>
-          <a
-            href="/"
-            className="text-luxury-gold hover:text-luxury-dark-gold mt-4 inline-block"
-          >
-            Return Home
-          </a>
-        </div>
-      </div>
-    ),
+    element: <NotFoundPage />,
   },
 ]);
 
