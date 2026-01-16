@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-luxury-black text-luxury-off-white font-serif;
+  }
+}
+
+@layer components {
+  .btn-luxury-primary {
+    @apply bg-luxury-gold text-luxury-black px-8 py-4 font-sans font-bold uppercase tracking-wider
+           hover:bg-luxury-dark-gold transition-all duration-300 transform hover:scale-105
+           shadow-lg hover:shadow-xl;
+  }
+
+  .btn-luxury-secondary {
+    @apply border-2 border-luxury-gold text-luxury-gold px-8 py-4 font-sans font-bold uppercase tracking-wider
+           hover:bg-luxury-gold hover:text-luxury-black transition-all duration-300
+           shadow-lg hover:shadow-xl;
+  }
+
+  .card-luxury {
+    @apply bg-luxury-off-black border border-luxury-gold p-8 
+           shadow-2xl hover:shadow-luxury-gold/20 transition-shadow duration-300;
+  }
+
+  .input-luxury {
+    @apply bg-luxury-off-black border-2 border-luxury-gold/30 text-luxury-off-white px-6 py-4
+           focus:border-luxury-gold focus:outline-none focus:ring-2 focus:ring-luxury-gold/50
+           placeholder-luxury-champagne/50 transition-all duration-300;
+  }
+
+  .heading-luxury {
+    @apply font-elegant text-luxury-gold text-4xl md:text-6xl tracking-wide;
+  }
+
+  .subheading-luxury {
+    @apply font-serif text-luxury-champagne text-xl md:text-2xl italic;
+  }
+}
+
+::selection {
+  background-color: theme('colors.luxury.gold');
+  color: theme('colors.luxury.black');
+}
